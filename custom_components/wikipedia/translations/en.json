@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Wikipedia Setup",
+        "data": {
+          "language": "Language",
+          "update_interval": "Update Interval (hours)",
+          "featured_article": "Featured Article",
+          "image_of_day": "Image of the Day",
+          "on_this_day": "On This Day",
+          "on_this_day_count": "On This Day — number of events (1-3)",
+          "most_read": "Most Read Articles",
+          "in_the_news": "In the News",
+          "in_the_news_count": "In the News — number of stories (1-3)"
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Only one Wikipedia instance allowed."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Wikipedia Options",
+        "data": {
+          "language": "Language",
+          "update_interval": "Update Interval (hours)",
+          "featured_article": "Featured Article",
+          "image_of_day": "Image of the Day",
+          "on_this_day": "On This Day",
+          "on_this_day_count": "On This Day — number of events (1-3)",
+          "most_read": "Most Read Articles",
+          "in_the_news": "In the News",
+          "in_the_news_count": "In the News — number of stories (1-3)"
+        }
+      }
+    }
+  }
+}
