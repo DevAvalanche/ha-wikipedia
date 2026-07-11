@@ -212,8 +212,11 @@ class WikipediaDataUpdateCoordinator(DataUpdateCoordinator):
         events = otd.get("events")
         if not isinstance(events, list) or not events:
             return
-        historical = [e for e in events if isinstance(e, dict) and int(e.get("year", 9999)) < 1990]
-sliced = historical[:count]
+        historical = [
+            e for e in events
+            if isinstance(e, dict) and int(e.get("year", 9999)) < 1990
+        ]
+        sliced = historical[:count]
         result[DATA_ON_THIS_DAY] = {
             "count": len(sliced),
             "date": f"{int(day):02d}/{int(month):02d}",
