@@ -11,6 +11,7 @@ CONF_ON_THIS_DAY_COUNT = "on_this_day_count"
 CONF_MOST_READ = "most_read"
 CONF_IN_THE_NEWS = "in_the_news"
 CONF_IN_THE_NEWS_COUNT = "in_the_news_count"
+CONF_DID_YOU_KNOW = "did_you_know"
 
 DEFAULT_LANGUAGE = "en"
 DEFAULT_UPDATE_INTERVAL = 6
@@ -22,6 +23,7 @@ DATA_IMAGE_OF_DAY = "image"
 DATA_ON_THIS_DAY = "onthisday"
 DATA_MOST_READ = "mostread"
 DATA_IN_THE_NEWS = "news"
+DATA_DID_YOU_KNOW = "dyk"
 
 SUPPORTED_LANGUAGES = {
     "en": "English",

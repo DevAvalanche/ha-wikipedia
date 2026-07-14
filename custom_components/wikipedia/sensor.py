@@ -16,11 +16,13 @@ from .const import (
     CONF_ON_THIS_DAY,
     CONF_MOST_READ,
     CONF_IN_THE_NEWS,
+    CONF_DID_YOU_KNOW,
     DATA_FEATURED_ARTICLE,
     DATA_IMAGE_OF_DAY,
     DATA_ON_THIS_DAY,
     DATA_MOST_READ,
     DATA_IN_THE_NEWS,
+    DATA_DID_YOU_KNOW,
 )
 from .coordinator import WikipediaDataUpdateCoordinator
 
@@ -30,16 +32,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     opts = {**entry.data, **entry.options}
     entities = []
 
-    if opts.get(CONF_FEATURED_ARTICLE, True):
+    if opts.get(CONF_FEATURED_ARTICLE, False):
         entities.append(WikipediaSensor(coordinator, entry, DATA_FEATURED_ARTICLE, "Featured Article", "mdi:book-open-page-variant"))
     if opts.get(CONF_IMAGE_OF_DAY, True):
         entities.append(WikipediaSensor(coordinator, entry, DATA_IMAGE_OF_DAY, "Image of the Day", "mdi:image"))
     if opts.get(CONF_ON_THIS_DAY, True):
         entities.append(WikipediaSensor(coordinator, entry, DATA_ON_THIS_DAY, "On This Day", "mdi:calendar-today"))
-    if opts.get(CONF_MOST_READ, True):
+    if opts.get(CONF_MOST_READ, False):
         entities.append(WikipediaSensor(coordinator, entry, DATA_MOST_READ, "Most Read", "mdi:trending-up"))
     if opts.get(CONF_IN_THE_NEWS, True):
         entities.append(WikipediaSensor(coordinator, entry, DATA_IN_THE_NEWS, "In the News", "mdi:newspaper"))
+    if opts.get(CONF_DID_YOU_KNOW, True):
+        entities.append(WikipediaSensor(coordinator, entry, DATA_DID_YOU_KNOW, "Did You Know", "mdi:lightbulb-on"))
 
     async_add_entities(entities)
 
@@ -76,7 +80,6 @@ class WikipediaSensor(CoordinatorEntity, SensorEntity):
         data = self._data
         if not data:
             return None
-        # Pick the best field for state depending on sensor type
         for field in ("title", "top_title", "count", "story"):
             val = data.get(field)
             if val is not None:

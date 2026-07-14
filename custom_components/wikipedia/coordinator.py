@@ -18,6 +18,7 @@ from .const import (
     DATA_ON_THIS_DAY,
     DATA_MOST_READ,
     DATA_IN_THE_NEWS,
+    DATA_DID_YOU_KNOW,
     CONF_LANGUAGE,
     CONF_FEATURED_ARTICLE,
     CONF_IMAGE_OF_DAY,
@@ -26,6 +27,7 @@ from .const import (
     CONF_MOST_READ,
     CONF_IN_THE_NEWS,
     CONF_IN_THE_NEWS_COUNT,
+    CONF_DID_YOU_KNOW,
     DEFAULT_ON_THIS_DAY_COUNT,
     DEFAULT_IN_THE_NEWS_COUNT,
     SUPPORTED_LANGUAGES,
@@ -111,6 +113,9 @@ class WikipediaDataUpdateCoordinator(DataUpdateCoordinator):
                     if self.options.get(CONF_IN_THE_NEWS, True):
                         count = int(self.options.get(CONF_IN_THE_NEWS_COUNT, DEFAULT_IN_THE_NEWS_COUNT))
                         self._news(feed, result, count)
+
+                    if self.options.get(CONF_DID_YOU_KNOW, True):
+                        self._dyk(feed, result)
 
                     if self.options.get(CONF_ON_THIS_DAY, True):
                         count = int(self.options.get(CONF_ON_THIS_DAY_COUNT, DEFAULT_ON_THIS_DAY_COUNT))
@@ -205,6 +210,54 @@ class WikipediaDataUpdateCoordinator(DataUpdateCoordinator):
                 }
                 for s in news[:count]
                 if isinstance(s, dict)
+            ],
+        }
+
+    def _dyk(self, feed: dict, result: dict) -> None:
+        dyk = feed.get("onthisday")
+        # Did You Know uses the 'dyk' key in the feed
+        raw_dyk = feed.get("dyk") or feed.get("didyouknow")
+        if not isinstance(raw_dyk, list) or not raw_dyk:
+            # fallback: try to get first selected event from feed onthisday
+            otd_feed = feed.get("onthisday")
+            if isinstance(otd_feed, list) and otd_feed:
+                first = otd_feed[0] if isinstance(otd_feed[0], dict) else {}
+                result[DATA_DID_YOU_KNOW] = {
+                    "facts": [
+                        {
+                            "text": _safe_str(first.get("text"), 400),
+                            "url": _safe_url(
+                                ((first.get("pages") or [{}])[0].get("content_urls") or {})
+                                .get("desktop", {}).get("page")
+                            ),
+                            "thumbnail": _safe_url(
+                                ((first.get("pages") or [{}])[0].get("thumbnail") or {}).get("source")
+                            ),
+                        }
+                    ],
+                    "count": 1,
+                }
+            return
+        result[DATA_DID_YOU_KNOW] = {
+            "count": len(raw_dyk[:3]),
+            "facts": [
+                {
+                    "text": _strip_html(_safe_str(
+                        item.get("text") or (item.get("article") or {}).get("description") or "", 400
+                    )),
+                    "url": _safe_url(
+                        (item.get("article") or {}).get("content_urls", {})
+                        .get("desktop", {}).get("page")
+                        or ((item.get("pages") or [{}])[0].get("content_urls") or {})
+                        .get("desktop", {}).get("page")
+                    ),
+                    "thumbnail": _safe_url(
+                        (item.get("article") or {}).get("thumbnail", {}).get("source")
+                        or ((item.get("pages") or [{}])[0].get("thumbnail") or {}).get("source")
+                    ),
+                }
+                for item in raw_dyk[:3]
+                if isinstance(item, dict)
             ],
         }
 

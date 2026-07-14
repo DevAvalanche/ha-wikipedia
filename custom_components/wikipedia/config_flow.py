@@ -24,6 +24,7 @@ from .const import (
     CONF_MOST_READ,
     CONF_IN_THE_NEWS,
     CONF_IN_THE_NEWS_COUNT,
+    CONF_DID_YOU_KNOW,
     SUPPORTED_LANGUAGES,
 )
 
@@ -48,6 +49,8 @@ def _schema(defaults: dict) -> vol.Schema:
             bool,
         vol.Required(CONF_IN_THE_NEWS_COUNT, default=defaults.get(CONF_IN_THE_NEWS_COUNT, DEFAULT_IN_THE_NEWS_COUNT)):
             vol.All(vol.Coerce(int), vol.Range(min=1, max=3)),
+        vol.Required(CONF_DID_YOU_KNOW, default=defaults.get(CONF_DID_YOU_KNOW, True)):
+            bool,
     })
 
 
